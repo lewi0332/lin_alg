@@ -1,6 +1,6 @@
 from decimal import Decimal, getcontext
 from copy import deepcopy
-
+from hyperplane import Hyperplane
 from vector import Vector
 from plane import Plane
 
@@ -182,28 +182,25 @@ class LinearSystem(object):
 
 
     def multiply_coefficient_and_row(self, coefficient, row):
-        n = self[row].normal_vector
-        k = self[row].constant_term
+        self[row] = _get_new_plane(coefficient, self[row])
+        # k = self[row].constant_term
 
-        new_normal_vector = n.times_scalar(coefficient)
-        new_constant_term = k * coefficient
+        # new_normal_vector = n.times_scalar(coefficient)
+        # new_constant_term = k * coefficient
 
-        self[row] = Plane(normal_vector=new_normal_vector,
-                          constant_term=new_constant_term)
+        # self[row] = Plane(normal_vector=new_normal_vector,
+        #                   constant_term=new_constant_term)
 
 
     def add_multiple_times_row_to_row(self, coefficient, row_to_add, row_to_be_added_to):
         
-        n1 = self[row_to_add].normal_vector
-        n2 = self[row_to_be_added_to].normal_vector
-        k1 = self[row_to_add].constant_term
-        k2 = self[row_to_be_added_to].constant_term
-
-        new_normal_vector = n1.times_scalar(coefficient).plus(n2)
-        new_constant_term = (k1 * coefficient) + k2
-
-        self[row_to_be_added_to] = Plane(normal_vector=new_normal_vector,
-                                        constant_term=new_constant_term)
+        recipient_plane = self[row_to_be_added_to]
+        new_plane = _get_new_plane(coefficient, self[row_to_add])
+        new_normal_vector = \
+            recipient_plane.normal_vector.plus(new_plane.normal_vector)
+        constant_term = new_plane.constant_term + recipient_plane.constant_term
+        self[row_to_be_added_to] = Hyperplane(normal_vector=new_normal_vector,
+                                              constant_term=constant_term)
 
 
 
@@ -254,6 +251,11 @@ class MyDecimal(Decimal):
     def is_near_zero(self, eps=1e-10):
         return abs(self) < eps
 
+def _get_new_plane(coefficient, plane):
+    new_normal_vector = plane.normal_vector.times_scalar(coefficient)
+    return Hyperplane(normal_vector=new_normal_vector,
+                      constant_term=coefficient * plane.constant_term)
+
 class Parametrization(object):
 
     BASEPT_AND_DIR_VECTORS_MUST_BE_IN_SAME_DIM_MESG = (
@@ -286,7 +288,7 @@ class Parametrization(object):
         return output
 
 
-# This is the example problems looking for a solution.
+#Example problems looking for a solution.
 p1 = Plane(normal_vector=Vector(['5.862','1.178','-10.366']), constant_term='-8.15')
 p2 = Plane(normal_vector=Vector(['-2.931','-.589','5.183']), constant_term='-4.075')
 s = LinearSystem([p1,p2])
@@ -305,122 +307,22 @@ p2 = Plane(Vector([5.111,6.358,7.638]), constant_term=-2.152)
 p3 = Plane(Vector([2.016,-9.924,-1.367]), constant_term=-9.278)
 p4 = Plane(Vector([2.167,-13.543,-18.883]), constant_term=-10.567)
 s = LinearSystem([p1,p2,p3,p4])
-print('\n\nThis intersection should be x=-1.177, y=0.707, and z=-0.083')
 print('System 3 solution:\n{}'.format(s.compute_solution()))
 
-# This is the fist test section.
-# p0 = Plane(normal_vector=Vector(['1','1','1']), constant_term='1')
-# p1 = Plane(normal_vector=Vector(['0','1','0']), constant_term='2')
-# p2 = Plane(normal_vector=Vector(['1','1','-1']), constant_term='3')
-# p3 = Plane(normal_vector=Vector(['1','0','-2']), constant_term='2')
+p1 = Plane(normal_vector=Vector(['0.935', '1.76', '-9.365']), constant_term='-9.955')
+p2 = Plane(normal_vector=Vector(['0.187', '0.352', '-1.873']), constant_term='-1.991')
+p3 = Plane(normal_vector=Vector(['0.374', '.704', '-3.746']), constant_term='-3.982')
+p4 = Plane(normal_vector=Vector(['-.561', '-1.056', '5.619']), constant_term='5.973')
 
-# s = LinearSystem([p1,p2,p3,p4])
+s = LinearSystem([p1, p2, p3, p4])
+print(s.compute_solution())
 
-# print ('\n\n\n', s.indices_of_first_nonzero_terms_in_each_row())
-# print ('{},{},{},{}'.format(s[0],s[1],s[2],s[3]))
-# print (len(s))
-# print (s)
+p1 = Hyperplane(normal_vector=Vector(['0.786', '0.786', '8.123', '1.111', '-8.363']),
+                constant_term='-9.955')
+p2 = Hyperplane(normal_vector=Vector(['0.131', '-0.131', '7.05', '-2.813', '1.19']),
+                constant_term='-1.991')
+p3 = Hyperplane(normal_vector=Vector(['9.015', '-5.873', '-1.105', '2.013', '-2.802']),
+                constant_term='-3.982')
 
-# # s[0] = p1
-# print (s)
-
-# print (MyDecimal('1e-9').is_near_zero())
-# print (MyDecimal('1e-11').is_near_zero())
-
-# print(MyDecimal('1e-9').is_near_zero())
-# print(MyDecimal('1e-11').is_near_zero())
-
-# # p0 = Plane(normal_vector=Vector(['1','1','1']), constant_term='1')
-# # p1 = Plane(normal_vector=Vector(['0','1','0']), constant_term='2')
-# # p2 = Plane(normal_vector=Vector(['1','1','-1']), constant_term='3')
-# # p3 = Plane(normal_vector=Vector(['1','0','-2']), constant_term='2')
-
-# # s = LinearSystem([p0,p1,p2,p3])
-# # s.swap_rows(0,1)
-# # if not (s[0] == p1 and s[1] == p0 and s[2] == p2 and s[3] == p3):
-# #     print ('test case 1 failed')
-
-# # s.swap_rows(1,3)
-# # if not (s[0] == p1 and s[1] == p3 and s[2] == p2 and s[3] == p0):
-# #     print ('test case 2 failed')
-
-# # s.swap_rows(3,1)
-# # if not (s[0] == p1 and s[1] == p0 and s[2] == p2 and s[3] == p3):
-# #     print ('test case 3 failed')
-
-# # s.multiply_coefficient_and_row(1,0)
-# # if not (s[0] == p1 and s[1] == p0 and s[2] == p2 and s[3] == p3):
-# #     print ('test case 4 failed')
-
-# # s.multiply_coefficient_and_row(-1,2)
-# # if not (s[0] == p1 and
-# #         s[1] == p0 and
-# #         s[2] == Plane(normal_vector=Vector(['-1','-1','1']), constant_term='-3') and
-# #         s[3] == p3):
-# #     print ('test case 5 failed')
-
-# # s.multiply_coefficient_and_row(10,1)
-# # if not (s[0] == p1 and
-# #         s[1] == Plane(normal_vector=Vector(['10','10','10']), constant_term='10') and
-# #         s[2] == Plane(normal_vector=Vector(['-1','-1','1']), constant_term='-3') and
-# #         s[3] == p3):
-# #     print ('test case 6 failed')
-
-# # s.add_multiple_times_row_to_row(0,0,1)
-# # if not (s[0] == p1 and
-# #         s[1] == Plane(normal_vector=Vector(['10','10','10']), constant_term='10') and
-# #         s[2] == Plane(normal_vector=Vector(['-1','-1','1']), constant_term='-3') and
-# #         s[3] == p3):
-# #     print ('test case 7 failed')
-
-# # s.add_multiple_times_row_to_row(1,0,1)
-# # if not (s[0] == p1 and
-# #         s[1] == Plane(normal_vector=Vector(['10','11','10']), constant_term='12') and
-# #         s[2] == Plane(normal_vector=Vector(['-1','-1','1']), constant_term='-3') and
-# #         s[3] == p3):
-# #     print ('test case 8 failed')
-
-# # s.add_multiple_times_row_to_row(-1,1,0)
-# # if not (s[0] == Plane(normal_vector=Vector(['-10','-10','-10']), constant_term='-10') and
-# #         s[1] == Plane(normal_vector=Vector(['10','11','10']), constant_term='12') and
-# #         s[2] == Plane(normal_vector=Vector(['-1','-1','1']), constant_term='-3') and
-# #         s[3] == p3):
-# #     print ('test case 9 failed')
-
-# p1 = Plane(normal_vector=Vector(['1','1','1']), constant_term='1')
-# p2 = Plane(normal_vector=Vector(['0','1','1']), constant_term='2')
-# s = LinearSystem([p1,p2])
-# t = s.compute_triangular_form()
-# if not (t[0] == p1 and
-#         t[1] == p2):
-#     print ('test case 1 failed')
-
-# p1 = Plane(normal_vector=Vector(['1','1','1']), constant_term='1')
-# p2 = Plane(normal_vector=Vector(['1','1','1']), constant_term='2')
-# s = LinearSystem([p1,p2])
-# t = s.compute_triangular_form()
-# if not (t[0] == p1 and
-#         t[1] == Plane(constant_term='1')):
-#     print ('test case 2 failed')
-
-# p1 = Plane(normal_vector=Vector(['1','1','1']), constant_term='1')
-# p2 = Plane(normal_vector=Vector(['0','1','0']), constant_term='2')
-# p3 = Plane(normal_vector=Vector(['1','1','-1']), constant_term='3')
-# p4 = Plane(normal_vector=Vector(['1','0','-2']), constant_term='2')
-# s = LinearSystem([p1,p2,p3,p4])
-# t = s.compute_triangular_form()
-# if not (t[0] == p1 and
-#         t[1] == p2 and
-#         t[2] == Plane(normal_vector=Vector(['0','0','-2']), constant_term='2') and
-#         t[3] == Plane()):
-#     print ('test case 3 failed')
-
-# p1 = Plane(normal_vector=Vector(['0','1','1']), constant_term='1')
-# p2 = Plane(normal_vector=Vector(['1','-1','1']), constant_term='2')
-# p3 = Plane(normal_vector=Vector(['1','2','-5']), constant_term='3')
-# s = LinearSystem([p1,p2,p3])
-# t = s.compute_triangular_form()
-# if not (t[0] == Plane(normal_vector=Vector(['1','-1','1']), constant_term='2') and
-#         t[1] == Plane(normal_vector=Vector(['0','1','1']), constant_term='1') and
-#         t[2] == Plane(normal_vector=Vector(['0','0','-9']), constant_term='-2')):
-#     print ('test case 4 failed')
+system = LinearSystem([p1, p2, p3])
+print (system.compute_solution())
