@@ -128,6 +128,7 @@ class MyDecimal(Decimal):
     def is_near_zero(self, eps=1e-10):
         return abs(self) < eps
 
+#Test problems below. 
 # p1 = Hyperplane(normal_vector=Vector(['-.412', '3.806', '0.728']), constant_term='-3.46')
 # p2 = Hyperplane(normal_vector=Vector(['1.03', '-9.515', '-1.82']), constant_term='8.65')
 
@@ -140,4 +141,4 @@ class MyDecimal(Decimal):
 # p2 = Hyperplane(normal_vector=Vector(['-2.642','2.875','-2.404']), constant_term='-2.44')
 # print('first pair of planes are parallel?: {}'.format(p1.is_parallel_to(p2)))
 # print('First pair of planes are equal?: {}'.format(p1 == p2))
-
+ 
