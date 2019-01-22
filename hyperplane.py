@@ -142,3 +142,5 @@ class MyDecimal(Decimal):
 # print('first pair of planes are parallel?: {}'.format(p1.is_parallel_to(p2)))
 # print('First pair of planes are equal?: {}'.format(p1 == p2))
  
+ #added a comment to test git
+ 
