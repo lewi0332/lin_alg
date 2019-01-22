@@ -129,8 +129,8 @@ class MyDecimal(Decimal):
         return abs(self) < eps
 
 #Test problems below. 
-# p1 = Hyperplane(normal_vector=Vector(['-.412', '3.806', '0.728']), constant_term='-3.46')
-# p2 = Hyperplane(normal_vector=Vector(['1.03', '-9.515', '-1.82']), constant_term='8.65')
+p1 = Hyperplane(normal_vector=Vector(['-.412', '3.806', '0.728']), constant_term='-3.46')
+p2 = Hyperplane(normal_vector=Vector(['1.03', '-9.515', '-1.82']), constant_term='8.65')
 
 # p1 = Hyperplane(normal_vector=Vector(['2.611','5.528','0.283']), constant_term='4.6')
 # p2 = Hyperplane(normal_vector=Vector(['7.715','8.306','5.342']), constant_term='3.76')
