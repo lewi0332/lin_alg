@@ -326,3 +326,5 @@ p3 = Hyperplane(normal_vector=Vector(['9.015', '-5.873', '-1.105', '2.013', '-2.
 
 system = LinearSystem([p1, p2, p3])
 print (system.compute_solution())
+
+#test
