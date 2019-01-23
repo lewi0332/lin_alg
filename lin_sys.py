@@ -89,7 +89,7 @@ class LinearSystem(object):
                 else:
                     raise e
 
-        return indicesb
+        return indices
 
     def compute_triangular_form(self):
         system = deepcopy(self)
